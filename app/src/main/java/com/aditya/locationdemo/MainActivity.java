@@ -9,6 +9,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,6 +19,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+/*
+in order to make your app full screne write the codes below in styles.xml
+<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">@color/orange</item>
+    <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
+</style>
+ */
 
 public class MainActivity extends AppCompatActivity {
 // <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> //gives you precise location using the gps
@@ -30,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
     TextView longitude;
     LocationListener locationListener;
     LocationManager locationManager;
+
+    //textviews holding the address of the current location
+    TextView textViewState;
+    TextView textViewCity;
+    TextView textViewCountry;
+    TextView textViewPostal_Code;
 
     //this method tells us if some app is requesting permission and tracks whether the user has said yes or no
     @Override
@@ -51,6 +74,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         latitude = (TextView)findViewById(R.id.latitude);
         longitude = (TextView)findViewById(R.id.longitude);
+
+        //texViews holding the address of the current location
+        textViewState = (TextView)findViewById(R.id.state);
+        textViewCity = (TextView)findViewById(R.id.city);
+        textViewCountry = (TextView)findViewById(R.id.country);
+        textViewPostal_Code = (TextView)findViewById(R.id.postal_code);
+        TextView DevInfo = (TextView)findViewById(R.id.DevInfo);
+
+        //setting up DevInfo button to open a new activity
+        DevInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DevActivity.class);
+                startActivity(intent);
+            }
+        });
 
         Button button = (Button)findViewById(R.id.button);
         //setting up onClickListener on the button
@@ -89,6 +128,46 @@ public class MainActivity extends AppCompatActivity {
                 longitude.setText(Double.toString((double) location.getLongitude())+ " " +Longitude);
                 latitude_val = (double) location.getLatitude();
                 longitude_val = (double) location.getLongitude();
+
+                //getting address from coordinates from the satellite
+                //using geocoder allows us to pass any latitude and longitude and in return it gives us the address of that coordinate back to us
+                //Locale.getDefault() will return the address of the current location of the device
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                //getting information from a particular location coordinates
+                //maxresult: 1 will give us the best matched address for our current location
+                try {
+                    List<Address> listAddresses= geocoder.getFromLocation(latitude_val,longitude_val,1); //it is going to return a list of addresses
+
+                    //checking if the listAddresses is null or not
+                    if(listAddresses!=null && listAddresses.size()>0)
+                    {
+                        Log.i("place",listAddresses.get(0).toString());
+                        //storing the address that we got from geocoder into the string
+                        /* here when you get address from geo coder back from google server
+                           admin  = state
+                           locality = city
+
+                         */
+                        if(listAddresses.get(0).getAdminArea()!=null)
+                        {
+                           textViewState.setText(listAddresses.get(0).getAdminArea());
+                        }
+                        if(listAddresses.get(0).getLocality()!=null)
+                        {
+                            textViewCity.setText(listAddresses.get(0).getLocality());
+                        }
+                        if(listAddresses.get(0).getCountryName()!=null)
+                        {
+                            textViewCountry.setText(listAddresses.get(0).getCountryName());
+                        }
+                        if(listAddresses.get(0).getAddressLine(0)!=null)
+                        {
+                            textViewPostal_Code.setText(listAddresses.get(0).getAddressLine(0));
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
