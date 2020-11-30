@@ -5,7 +5,6 @@
         <item name="colorPrimary">@color/common_google_signin_btn_text_dark_focused</item>
         <item name="colorPrimaryDark">@color/common_google_signin_btn_text_dark_focused</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>

@@ -14,18 +14,33 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 /*
-in order to make your app full screne write the codes below in styles.xml
+in order to remove the taskbar that shows battery percentage write the codes below in styles.xml
 <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!-- Customize your theme here. -->
     <item name="colorPrimary">@color/orange</item>
@@ -33,6 +48,15 @@ in order to make your app full screne write the codes below in styles.xml
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowFullscreen">true</item>
 </style>
+
+in order to remove action bar that shows application title
+write these codes in android manifest xml file
+ android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Hiking navigator"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -53,20 +77,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewCity;
     TextView textViewCountry;
     TextView textViewPostal_Code;
-
-    //this method tells us if some app is requesting permission and tracks whether the user has said yes or no
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-              //first we will check if we got permission or not
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    //if the user gave the permission so in this if block we will update and display the location of the device
-                //it will update the location of the device
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            }
-        }
-    }
+    TextView AccuracyTextView;
+    TextView AltitudeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
