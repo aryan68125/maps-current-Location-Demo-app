@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewCity;
     TextView textViewCountry;
     TextView textViewPostal_Code;
-    TextView AccuracyTextView;
-    TextView AltitudeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +92,17 @@ public class MainActivity extends AppCompatActivity {
         textViewPostal_Code = (TextView)findViewById(R.id.postal_code);
         TextView DevInfo = (TextView)findViewById(R.id.DevInfo);
 
+        //adding button that will openListView activity of saved location
+        Button showSavedLocation = (Button)findViewById(R.id.showSavedLocation);
+        //setting up the showSavedLocation button to open up the activity holding saved location
+        showSavedLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SavedLocationActivity3.class);
+                startActivity(intent);
+            }
+        });
+
         //setting up DevInfo button to open a new activity
         DevInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sending latitude and longitude data from main activity to the mapsActivity
+                //sending latitude and longitude data from main activity to the mapsActivity using Intent
                 // TODO Auto-generated method stub
                 double passingLatitude = latitude_val;
                 double passingLongitude = longitude_val;
@@ -210,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         else{
             //if the user has already given his permission to use the location on his device then the code below will execute
             //it will update the location of the device
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 30, locationListener);
             //here we will write the code to display the last known location of the user's device
             Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
            latitude_val = lastKnownLocation.getLatitude();

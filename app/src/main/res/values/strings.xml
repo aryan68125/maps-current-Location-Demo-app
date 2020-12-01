@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Location Demo</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps_saving_location">Map</string>
 </resources>
