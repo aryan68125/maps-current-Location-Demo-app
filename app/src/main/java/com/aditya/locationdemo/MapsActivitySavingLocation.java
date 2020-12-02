@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -203,7 +205,43 @@ public class MapsActivitySavingLocation extends FragmentActivity implements OnMa
         //storing latitude and longitude
         SavedLocationActivity3.Savedplaces.add(latLng);
 
-            SavedLocationActivity3.arrayAdapter.notifyDataSetChanged();
+        SavedLocationActivity3.arrayAdapter.notifyDataSetChanged();
+
+        //SharedPreferences sharedPreferences = this.getSharedPreferences("Name of the application", Context.MODE_PRIVATE);
+        //Context.MODE_PRIVATE = we need to save data for only this application
+        //com.aditya.datastoragesharedpreferences = application reference
+        /*sharedPreferences.edit().putString("username", "Aditya Kumar").apply(); //for storing data
+        "username" = key just like in intentputextra function
+        "Aditya Kumar" is the actual String that is saved in shared Preferences
+       String username = sharedPreferences.getString("username",""); //for getting the stored data
+        Log.i("userName",username);
+        */
+        SharedPreferences sharedPreferences = this.getSharedPreferences("com.aditya.locationdemo", Context.MODE_PRIVATE);
+
+        try {
+
+            ArrayList<String> latitudes = new ArrayList<>();
+            ArrayList<String> longitudes = new ArrayList<>();
+
+            /*
+            coord.latitude = gives us latitude from the savedPlaces<latlang> ArrayList
+            coord.longitude = give us longitude from savedPlaces<latlang> ArrayList
+            SavedLocationActivity3.Savedplaces inorser to access this Array List it should be defined as static outside any functions
+             */
+            for (LatLng coord : SavedLocationActivity3.Savedplaces) {
+                latitudes.add(Double.toString(coord.latitude));
+                longitudes.add(Double.toString(coord.longitude));
+            }
+            //it will covert our arrayList into one big Massive String with all the entries
+            //sharedPreferences.edit().putString("ArrayToString",ObjectSerializer.serialize(concubine)).apply(); //for storing
+            sharedPreferences.edit().putString("places", ObjectSerializer.serialize(SavedLocationActivity3.places)).apply();
+            sharedPreferences.edit().putString("lats", ObjectSerializer.serialize(latitudes)).apply();
+            sharedPreferences.edit().putString("lons", ObjectSerializer.serialize(longitudes)).apply();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Toast.makeText(this, "Location saved",Toast.LENGTH_SHORT).show();
     }
