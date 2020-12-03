@@ -1,5 +1,9 @@
 # maps-current-Location-Demo-app
+this app demosntrates how to add a marker on a map via long press and save that location in a listView and store that information inside the shared system preferences so that when we close the app and reopens it then the location that we just saved will not be deleted and is retained by the application
+Shared System preferences can only hold small amount of data its not suitable to hold large amount of data inside the app
+
 this application takes the current location of the device from google maps using api and its key and displays it onto the mapActivity this also demonstrate the sending of data between activities in an app in this case the current coordinates of the device are sent from main activity to map activity
+
 Get string between parentheses
 
 \\( – opening parenthesis
@@ -45,3 +49,4 @@ Pattern for brackets is much like the pattern between parentheses. We will have 
 Get string between curly braces
 
 "\\{([^}]+)\\}"
+
